@@ -24,11 +24,14 @@ export function AuthProvider({ children }) {
   useEffect(() => onAuthStateChanged(auth, async (fu) => { await cargarPerfil(fu); setLoading(false); }), []);
 
   async function login(email, password) {
-    try {
-      const cred = await signInWithEmailAndPassword(auth, email.trim(), password);
-      return !!(await cargarPerfil(cred.user));
-    } catch { return false; }
+  try {
+    const cred = await signInWithEmailAndPassword(auth, email.trim(), password);
+    const u = await cargarPerfil(cred.user);
+    return u ? null : 'sin-perfil';
+  } catch (e) {
+    return e.code || e.message;
   }
+}
   const logout = () => signOut(auth);
 
   return <Ctx.Provider value={{ user, loading, login, logout }}>{children}</Ctx.Provider>;

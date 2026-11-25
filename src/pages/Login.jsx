@@ -10,10 +10,10 @@ export default function Login() {
   const [error, setError] = useState('');
 
   async function enviar(e) {
-    e.preventDefault();
-    const ok = await login(email, pass);
-    if (ok) nav('/admin'); else setError('Email o contraseña incorrectos');
-  }
+  e.preventDefault();
+  const err = await login(email, pass);
+  if (!err) nav('/admin'); else setError('Error: ' + err);
+}
   return (
     <div className="container narrow">
       <form className="panel" onSubmit={enviar}>
