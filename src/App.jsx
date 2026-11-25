@@ -7,7 +7,8 @@ import Admin from './pages/Admin.jsx';
 import { useAuth } from './auth.jsx';
 
 function Protegida({ children }) {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
+  if (loading) return <div className="container">Cargando…</div>;
   return user ? children : <Navigate to="/login" replace />;
 }
 

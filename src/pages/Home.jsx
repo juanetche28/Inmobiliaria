@@ -1,11 +1,13 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getProps } from '../storage.js';
+import { listProps } from '../data.js';
 
 export const precio = (p) => `${p.moneda} ${Number(p.precio).toLocaleString('es-AR')}`;
 
 export default function Home() {
-  const props = getProps();
+  const [props, setProps] = useState([]);
+  const [estado, setEstado] = useState('cargando');
+  useEffect(() => { listProps().then((l) => { setProps(l); setEstado('ok'); }).catch(() => setEstado('error')); }, []);
   const [op, setOp] = useState('Todas');
   const [amb, setAmb] = useState(0);
   const [q, setQ] = useState('');
@@ -50,7 +52,9 @@ export default function Home() {
               </Link>
             );
           })}
-          {!lista.length && <p>No hay propiedades que coincidan.</p>}
+          {estado === 'cargando' && <p>Cargando propiedades…</p>}
+          {estado === 'error' && <p className="error">No se pudieron cargar las propiedades.</p>}
+          {estado === 'ok' && !lista.length && <p>No hay propiedades que coincidan.</p>}
         </div>
       </section>
     </>
